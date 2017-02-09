@@ -1,5 +1,6 @@
 package com.wangjie.rapidrouter.example.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ public class BActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setBackgroundDrawable(new ColorDrawable(0xffbbccaa));
-        Log.i(TAG, "intent: " + getIntent());
+        Intent intent = getIntent();
+        Log.i(TAG, "intent: " + intent.getLongExtra("id", -1L));
     }
 }
