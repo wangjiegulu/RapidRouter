@@ -1,4 +1,4 @@
-package com.wangjie.rapidrouter.example.application;
+package com.wangjie.rapidrouter.example.router;
 
 import android.util.Log;
 

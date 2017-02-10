@@ -3,8 +3,8 @@ package com.wangjie.rapidrouter.compiler;
 import com.google.auto.service.AutoService;
 
 import com.squareup.javapoet.ClassName;
+import com.wangjie.rapidrouter.api.annotations.RRConfig;
 import com.wangjie.rapidrouter.api.annotations.RRParam;
-import com.wangjie.rapidrouter.api.annotations.RRPoint;
 import com.wangjie.rapidrouter.api.annotations.RRUri;
 import com.wangjie.rapidrouter.api.annotations.RRouter;
 import com.wangjie.rapidrouter.compiler.base.BaseAbstractProcessor;
@@ -32,7 +32,7 @@ public class RouterProcessor extends BaseAbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> supportedTypesSet = new HashSet<>();
-        supportedTypesSet.add(RRPoint.class.getCanonicalName());
+        supportedTypesSet.add(RRConfig.class.getCanonicalName());
         supportedTypesSet.add(RRouter.class.getCanonicalName());
         supportedTypesSet.add(RRUri.class.getCanonicalName());
         return supportedTypesSet;
@@ -46,7 +46,7 @@ public class RouterProcessor extends BaseAbstractProcessor {
             logger("roundEnv.getRootElements(): " + roundEnv.getRootElements());
             RouterEntry routerEntry = new RouterEntry();
 
-            doPointAnnotation(roundEnv.getElementsAnnotatedWith(RRPoint.class), routerEntry);
+            doPointAnnotation(roundEnv.getElementsAnnotatedWith(RRConfig.class), routerEntry);
 
             for (Element e : roundEnv.getElementsAnnotatedWith(RRouter.class)) {
                 doRouterAnnotation(e, routerEntry);
@@ -56,15 +56,15 @@ public class RouterProcessor extends BaseAbstractProcessor {
                 doUriAnnotation(e, routerEntry);
             }
 
-            if(!routerEntry.getUriEntries().isEmpty()){
+            if (!routerEntry.getUriEntries().isEmpty()) {
                 try {
-                    logger("RouterConfig generate START...");
-                    routerEntry.brewJava().writeTo(filer);
-                    logger("RouterConfig generate END...routerEntry: " + routerEntry);
+                    logger("RouterMapping generate START...");
+//                    routerEntry.brewJava().writeTo(filer);
+                    logger("RouterMapping generate END...routerEntry: " + routerEntry);
                 } catch (RuntimeException e) {
                     throw e;
                 } catch (Throwable throwable) {
-                    logger("RouterConfig generate FAILED...routerEntry: " + routerEntry);
+                    logger("RouterMapping generate FAILED...routerEntry: " + routerEntry);
                     loggerE(throwable);
                 }
             }
@@ -91,15 +91,16 @@ public class RouterProcessor extends BaseAbstractProcessor {
             throw new RuntimeException("More than one Router Point Class Annotated @RRPoint.");
         }
 
-        Element pointEle = eles.iterator().next();
+        Element configEle = eles.iterator().next();
 
-        String configPackage = elementUtils.getPackageOf(pointEle).toString();
-        if (null != configPackage && configPackage.length() > 0) {
-            routerEntry.routerConfigPackage = configPackage;
+        String mappingPackage = elementUtils.getPackageOf(configEle).toString();
+        if (null != mappingPackage && mappingPackage.length() > 0) {
+            routerEntry.routerMappingPackage = mappingPackage;
         }
-        String configClassName = pointEle.getAnnotation(RRPoint.class).value();
-        if (configClassName.length() > 0) {
-            routerEntry.routerConfigClassName = configClassName;
+        RRConfig rrConfig = configEle.getAnnotation(RRConfig.class);
+        String mappingClassName = rrConfig.mappingName();
+        if (mappingClassName.length() > 0) {
+            routerEntry.routerMappingClassName = mappingClassName;
         }
     }
 

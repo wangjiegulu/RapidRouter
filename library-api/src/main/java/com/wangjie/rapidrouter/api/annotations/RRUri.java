@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 public @interface RRUri {
     String scheme();
+
     String host();
+
     RRParam[] params() default {};
 }

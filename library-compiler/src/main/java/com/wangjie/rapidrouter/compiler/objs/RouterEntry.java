@@ -29,21 +29,19 @@ public class RouterEntry {
         return uriEntries;
     }
 
-//    public static final String ROUTER_CONFIG_CLASS_NAME = "XRapidRouterConfig";
-
-    public String routerConfigPackage;
-    public String routerConfigClassName;
+    public String routerMappingPackage;
+    public String routerMappingClassName;
 
     public JavaFile brewJava() throws Throwable {
-        if (null == routerConfigPackage || routerConfigPackage.length() == 0
-                || null == routerConfigClassName || routerConfigClassName.length() == 0) {
+        if (null == routerMappingPackage || routerMappingPackage.length() == 0
+                || null == routerMappingClassName || routerMappingClassName.length() == 0) {
             throw new RuntimeException("Have no Router Point Class  Annotated @RRPoint!");
         }
 
-        TypeSpec.Builder result = TypeSpec.classBuilder(routerConfigClassName)
+        TypeSpec.Builder result = TypeSpec.classBuilder(routerMappingClassName)
                 .addModifiers(Modifier.PUBLIC)
-                .superclass( // extends RapidRouterConfig
-                        ClassName.bestGuess(GuessClass.BASE_ROUTER_CONFIG)
+                .superclass( // extends RapidRouterMapping
+                        ClassName.bestGuess(GuessClass.BASE_ROUTER_MAPPING)
                 );
 
         // calcRouterMapper method
@@ -89,11 +87,21 @@ public class RouterEntry {
 
         result.addMethod(calcRouterMapperMethodBuilder.build());
 
-        return JavaFile.builder(routerConfigPackage, result.build())
+        return JavaFile.builder(routerMappingPackage, result.build())
                 .addFileComment("GENERATED CODE BY RapidRouter. DO NOT MODIFY! $S",
                         DATE_FORMAT.format(new Date(System.currentTimeMillis()))
                 )
                 .skipJavaLangImports(true)
                 .build();
     }
+
+
+
+
+
+
+
+
+
+
 }

@@ -7,14 +7,21 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.wangjie.rapidrouter.core.config.RapidRouterConfiguration;
 import com.wangjie.rapidrouter.core.exception.RapidRouterIllegalException;
+import com.wangjie.rapidrouter.core.exception.RapidRouterNotInitializedException;
 import com.wangjie.rapidrouter.core.listener.OnRapidRouterListener;
 import com.wangjie.rapidrouter.core.listener.RouterGoAroundCallback;
 import com.wangjie.rapidrouter.core.listener.RouterGoBeforeCallback;
 import com.wangjie.rapidrouter.core.listener.RouterTargetNotFoundCallback;
+import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategy;
 import com.wangjie.rapidrouter.core.target.RouterTarget;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/8/17.
@@ -28,14 +35,30 @@ public class RapidRouter {
 
     private static final String TAG = RapidRouter.class.getSimpleName();
 
-    /**
-     * HashMap<{scheme}, HashMap<{host}, {activity Class}>>
-     */
-    private static HashMap<String, HashMap<String, RouterTarget>> maps;
+    private static TreeMap<Class<? extends RapidRouterStrategy>, RapidRouterStrategy> routerStrategyTreeMap;
 
-    public static void init(HashMap<String, HashMap<String, RouterTarget>> map) {
-        maps = map;
+    public static void init(@NonNull RapidRouterConfiguration rapidRouterConfiguration) {
+        config(rapidRouterConfiguration);
     }
+
+    private static void config(RapidRouterConfiguration rapidRouterConfiguration) {
+        // Router Strategy configuration
+        routerStrategyTreeMap = new TreeMap<>(new Comparator<Class<? extends RapidRouterStrategy>>() {
+            @Override
+            public int compare(Class<? extends RapidRouterStrategy> o1, Class<? extends RapidRouterStrategy> o2) {
+                return 1;
+            }
+        });
+
+        RapidRouterMapping[] rapidRouterMappings = rapidRouterConfiguration.configRapidRouterMappings();
+        for (RapidRouterStrategy routerStrategy : rapidRouterConfiguration.configRapidRouterStrategy()) {
+            // Router Mapping configuration
+            routerStrategy.onRapidRouterMappings(rapidRouterMappings);
+            routerStrategyTreeMap.put(routerStrategy.getClass(), routerStrategy);
+        }
+
+    }
+
 
     public static RouterStuff with(@NonNull Context context) {
         RouterStuff routerStuff = new RouterStuff();
@@ -44,19 +67,15 @@ public class RapidRouter {
     }
 
     protected static boolean to(RouterStuff routerStuff) {
-        if (null == maps) {
-            throw new RuntimeException("RapidRouter is not initialized");
+        if (null == routerStrategyTreeMap || routerStrategyTreeMap.isEmpty()) {
+            throw new RapidRouterNotInitializedException("RapidRouter is not initialized! Please call RapidRouter::init() first.");
         }
-        RouterTarget routerTarget = null;
 
         String uriStr = routerStuff.uriAsString();
         try {
             Uri uri = Uri.parse(uriStr);
 
-            HashMap<String, RouterTarget> schemeMapper = maps.get(uri.getScheme());
-            if (null != schemeMapper) {
-                routerTarget = schemeMapper.get(uri.getHost());
-            }
+            RouterTarget routerTarget = findRouterTarget(routerStuff, uri);
 
             if (null == routerTarget) {
                 RouterTargetNotFoundCallback targetNotFoundCallback = routerStuff.targetNotFound();
@@ -65,7 +84,6 @@ public class RapidRouter {
                         onRapidRouterListener.onRouterTargetNotFound(routerStuff);
                     }
                 }
-
                 return false;
             }
 
@@ -123,6 +141,31 @@ public class RapidRouter {
         }
     }
 
+    /**
+     * 根据策略 查询RouterTarget
+     */
+    private static RouterTarget findRouterTarget(RouterStuff routerStuff, Uri uri) {
+        RouterTarget routerTarget = null;
+        List<Class<? extends RapidRouterStrategy>> supportStrategies = routerStuff.strategies();
+        if (null == supportStrategies || supportStrategies.isEmpty()) {
+            for (Map.Entry<Class<? extends RapidRouterStrategy>, RapidRouterStrategy> entry : routerStrategyTreeMap.entrySet()) {
+                if (null != (routerTarget = entry.getValue().findRouterTarget(uri))) {
+                    break;
+                }
+            }
+        } else {
+            for (Class<? extends RapidRouterStrategy> routerStrategyClass : supportStrategies) {
+                RapidRouterStrategy routerStrategy = routerStrategyTreeMap.get(routerStrategyClass);
+                if (null != routerStrategy) {
+                    if (null != (routerTarget = routerStrategy.findRouterTarget(uri))) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return routerTarget;
+    }
 
     private static void putExtraToIntent(Intent intent, Class clazz, String paramName, String value) {
         if (null != value) {

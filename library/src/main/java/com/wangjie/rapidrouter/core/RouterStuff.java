@@ -2,6 +2,7 @@ package com.wangjie.rapidrouter.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 import com.wangjie.rapidrouter.core.exception.RapidRouterIllegalException;
 import com.wangjie.rapidrouter.core.listener.RouterErrorCallback;
@@ -9,6 +10,11 @@ import com.wangjie.rapidrouter.core.listener.RouterGoAfterCallback;
 import com.wangjie.rapidrouter.core.listener.RouterGoAroundCallback;
 import com.wangjie.rapidrouter.core.listener.RouterGoBeforeCallback;
 import com.wangjie.rapidrouter.core.listener.RouterTargetNotFoundCallback;
+import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategy;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/9/17.
@@ -23,6 +29,8 @@ public class RouterStuff {
     private RouterGoBeforeCallback goBefore;
     private RouterGoAroundCallback goAround;
     private RouterGoAfterCallback goAfter;
+
+    private List<Class<? extends RapidRouterStrategy>> supportStrategies;
 
     public RouterStuff intent(Intent intent) {
         this.intent = intent;
@@ -93,6 +101,19 @@ public class RouterStuff {
     public RouterStuff goAfter(RouterGoAfterCallback goAfterListener) {
         this.goAfter = goAfterListener;
         return this;
+    }
+
+    public RouterStuff strategies(Class<? extends RapidRouterStrategy>... strategies) {
+        if (null == supportStrategies) {
+            supportStrategies = new ArrayList<>();
+        }
+        supportStrategies.addAll(Arrays.asList(strategies));
+        return this;
+    }
+
+    @Nullable
+    public List<Class<? extends RapidRouterStrategy>> strategies() {
+        return supportStrategies;
     }
 
     public boolean go() {

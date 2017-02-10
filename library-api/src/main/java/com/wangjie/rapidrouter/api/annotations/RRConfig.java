@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface RRPoint {
-    String value();
+public @interface RRConfig {
+    String mappingName();
 }

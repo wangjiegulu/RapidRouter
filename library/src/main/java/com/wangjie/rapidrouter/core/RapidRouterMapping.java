@@ -7,19 +7,7 @@ import java.util.HashMap;
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/8/17.
  */
-public abstract class RapidRouterConfig {
-
-    public static HashMap<String, HashMap<String, RouterTarget>> calcAll(RapidRouterConfig... rapidRouterConfigs) {
-        HashMap<String, HashMap<String, RouterTarget>> result = new HashMap<>();
-        for (RapidRouterConfig rapidRouterConfig : rapidRouterConfigs) {
-            rapidRouterConfig.calcRouterMapper(result);
-        }
-        return result;
-    }
-
-//    private <K, K1, V1> HashMap<K1, V1> autoMap(HashMap<K, HashMap<K1, V1>> map, K key){
-//        map.get()
-//    }
+public abstract class RapidRouterMapping {
 
     protected HashMap<String, RouterTarget> getEnsureMap(HashMap<String, HashMap<String, RouterTarget>> routerMapper, String key) {
         HashMap<String, RouterTarget> map = routerMapper.get(key);
@@ -31,4 +19,7 @@ public abstract class RapidRouterConfig {
     }
 
     public abstract HashMap<String, HashMap<String, RouterTarget>> calcRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper);
+
+    public abstract HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper);
+
 }
