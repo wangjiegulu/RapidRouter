@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class ThisRapidRouterMapping extends RapidRouterMapping {
     @Override
-    public HashMap<String, HashMap<String, RouterTarget>> calcRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper) {
+    public HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper) {
         HashMap<String, Class> params;
 
         // com.wangjie.rapidrouter.example.activity.AActivity
@@ -33,16 +33,19 @@ public class ThisRapidRouterMapping extends RapidRouterMapping {
         params.put("id", long.class);
         getEnsureMap(routerMapper, "rr").put("rapidrouter.b", new RouterTarget(BActivity.class, params));
 
-        // com.wangjie.rapidrouter.example.activity.CActivity
-        getEnsureMap(routerMapper, "rr").put("rapidrouter.c", new RouterTarget(CActivity.class, null));
+//        // com.wangjie.rapidrouter.example.activity.CActivity
+        getEnsureMap(routerMapper, "sc").put("wangL0vjie.c", new RouterTarget(AActivity.class, null));
         return routerMapper;
     }
 
     @Override
     public HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper) {
+        HashMap<String, Class> params;
 
+        params = new HashMap<>();
+        params.put("paramOfCActivity", float.class);
+        routerMapper.put("((rr)|(sc))://wang.*jie\\.[cx].*", new RouterTarget(CActivity.class, params));
 
-
-        return null;
+        return routerMapper;
     }
 }

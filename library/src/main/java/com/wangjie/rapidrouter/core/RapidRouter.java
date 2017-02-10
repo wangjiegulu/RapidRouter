@@ -17,11 +17,10 @@ import com.wangjie.rapidrouter.core.listener.RouterTargetNotFoundCallback;
 import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategy;
 import com.wangjie.rapidrouter.core.target.RouterTarget;
 
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/8/17.
@@ -35,7 +34,10 @@ public class RapidRouter {
 
     private static final String TAG = RapidRouter.class.getSimpleName();
 
-    private static TreeMap<Class<? extends RapidRouterStrategy>, RapidRouterStrategy> routerStrategyTreeMap;
+    /**
+     * Tree<{RapidRouterStrategy class name}, {RapidRouterStrategy}>
+     */
+    private static LinkedHashMap<String, RapidRouterStrategy> routerStrategyTreeMap;
 
     public static void init(@NonNull RapidRouterConfiguration rapidRouterConfiguration) {
         config(rapidRouterConfiguration);
@@ -43,18 +45,13 @@ public class RapidRouter {
 
     private static void config(RapidRouterConfiguration rapidRouterConfiguration) {
         // Router Strategy configuration
-        routerStrategyTreeMap = new TreeMap<>(new Comparator<Class<? extends RapidRouterStrategy>>() {
-            @Override
-            public int compare(Class<? extends RapidRouterStrategy> o1, Class<? extends RapidRouterStrategy> o2) {
-                return 1;
-            }
-        });
+        routerStrategyTreeMap = new LinkedHashMap<>();
 
         RapidRouterMapping[] rapidRouterMappings = rapidRouterConfiguration.configRapidRouterMappings();
         for (RapidRouterStrategy routerStrategy : rapidRouterConfiguration.configRapidRouterStrategy()) {
             // Router Mapping configuration
             routerStrategy.onRapidRouterMappings(rapidRouterMappings);
-            routerStrategyTreeMap.put(routerStrategy.getClass(), routerStrategy);
+            routerStrategyTreeMap.put(routerStrategy.getClass().getCanonicalName(), routerStrategy);
         }
 
     }
@@ -95,6 +92,9 @@ public class RapidRouter {
             }
 
             Context context = routerStuff.context();
+            if (null == context) {
+                return false;
+            }
             intent.setComponent(new ComponentName(context, routerTarget.getTargetClass()));
             intent.setData(uri);
             HashMap<String, Class> params = routerTarget.getParams();
@@ -148,14 +148,14 @@ public class RapidRouter {
         RouterTarget routerTarget = null;
         List<Class<? extends RapidRouterStrategy>> supportStrategies = routerStuff.strategies();
         if (null == supportStrategies || supportStrategies.isEmpty()) {
-            for (Map.Entry<Class<? extends RapidRouterStrategy>, RapidRouterStrategy> entry : routerStrategyTreeMap.entrySet()) {
+            for (Map.Entry<String, RapidRouterStrategy> entry : routerStrategyTreeMap.entrySet()) {
                 if (null != (routerTarget = entry.getValue().findRouterTarget(uri))) {
                     break;
                 }
             }
         } else {
             for (Class<? extends RapidRouterStrategy> routerStrategyClass : supportStrategies) {
-                RapidRouterStrategy routerStrategy = routerStrategyTreeMap.get(routerStrategyClass);
+                RapidRouterStrategy routerStrategy = routerStrategyTreeMap.get(routerStrategyClass.getCanonicalName());
                 if (null != routerStrategy) {
                     if (null != (routerTarget = routerStrategy.findRouterTarget(uri))) {
                         break;

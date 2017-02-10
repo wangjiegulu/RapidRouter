@@ -12,6 +12,7 @@ import com.wangjie.rapidrouter.core.listener.RouterGoBeforeCallback;
 import com.wangjie.rapidrouter.core.listener.RouterTargetNotFoundCallback;
 import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategy;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/9/17.
  */
 public class RouterStuff {
-    private Context context;
+    private WeakReference<Context> contextRef;
     private Intent intent;
     private String uriStr;
 
@@ -37,12 +38,13 @@ public class RouterStuff {
         return this;
     }
 
+    @Nullable
     public Context context() {
-        return context;
+        return null == contextRef ? null : contextRef.get();
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        this.contextRef = new WeakReference<>(context);
     }
 
     public RouterStuff uri(String uriStr) {
@@ -103,7 +105,8 @@ public class RouterStuff {
         return this;
     }
 
-    public RouterStuff strategies(Class<? extends RapidRouterStrategy>... strategies) {
+    @SafeVarargs
+    public final RouterStuff strategies(Class<? extends RapidRouterStrategy>... strategies) {
         if (null == supportStrategies) {
             supportStrategies = new ArrayList<>();
         }
@@ -117,7 +120,7 @@ public class RouterStuff {
     }
 
     public boolean go() {
-        if (null == context) {
+        if (null == contextRef) {
             throw new RapidRouterIllegalException("Context can not be null!");
         }
         if (null == uriStr) {
@@ -129,7 +132,7 @@ public class RouterStuff {
     @Override
     public String toString() {
         return "RouterStuff{" +
-                "context=" + context +
+                "contextRef=" + contextRef +
                 ", intent=" + intent +
                 ", uriStr='" + uriStr + '\'' +
                 ", error=" + error +

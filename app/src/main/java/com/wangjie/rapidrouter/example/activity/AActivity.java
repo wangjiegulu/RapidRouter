@@ -15,15 +15,13 @@ import com.wangjie.rapidrouter.api.annotations.RRouter;
  */
 @RRouter(
         {
-                @RRUri(scheme = "rr",
-                        host = "rapidrouter.a",
+                @RRUri(uri = "rr://rapidrouter.a",
                         params = {
                                 @RRParam(name = "p_name"),
                                 @RRParam(name = "p_age", type = int.class)
                         }
                 ),
-                @RRUri(scheme = "rr",
-                        host = "rapidrouter_extra.a",
+                @RRUri(uri = "rr://rapidrouter_extra.a",
                         params = {
                                 @RRParam(name = "p_name"),
                                 @RRParam(name = "p_age", type = int.class)

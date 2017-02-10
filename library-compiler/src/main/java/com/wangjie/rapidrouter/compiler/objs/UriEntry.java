@@ -12,6 +12,7 @@ public class UriEntry {
     private Element routerTargetClass;
     private String scheme;
     private String host;
+    private String uriRegular;
     private List<ParamEntry> params = new ArrayList<>();
 
     public String getScheme() {
@@ -42,12 +43,21 @@ public class UriEntry {
         this.routerTargetClass = routerTargetClass;
     }
 
+    public void setUriRegular(String uriRegular) {
+        this.uriRegular = uriRegular;
+    }
+
+    public String getUriRegular() {
+        return uriRegular;
+    }
+
     @Override
     public String toString() {
         return "UriEntry{" +
                 "routerTargetClass=" + routerTargetClass +
                 ", scheme='" + scheme + '\'' +
                 ", host='" + host + '\'' +
+                ", uriRegular='" + uriRegular + '\'' +
                 ", params=" + params +
                 '}';
     }

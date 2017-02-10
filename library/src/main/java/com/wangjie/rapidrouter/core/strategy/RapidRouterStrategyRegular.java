@@ -21,11 +21,11 @@ public class RapidRouterStrategyRegular extends RapidRouterAbstractStrategy {
 
     @Override
     public void onRapidRouterMappings(RapidRouterMapping[] rapidRouterMappings) {
-//        HashMap<String, HashMap<String, RouterTarget>> result = new HashMap<>();
-//        for (RapidRouterMapping mapping : rapidRouterMappings) {
-//            mapping.calcRouterMapper(result);
-//        }
-//        mapping = result;
+        HashMap<String, RouterTarget> result = new HashMap<>();
+        for (RapidRouterMapping mapping : rapidRouterMappings) {
+            mapping.calcRegRouterMapper(result);
+        }
+        mapping = result;
     }
 
     @Nullable

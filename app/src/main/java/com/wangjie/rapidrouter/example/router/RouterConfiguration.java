@@ -9,7 +9,6 @@ import com.wangjie.rapidrouter.core.config.RapidRouterConfiguration;
 import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategy;
 import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategyRegular;
 import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategySimple;
-import com.wangjie.rapidrouter.example.ThisRapidRouterMapping;
 
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/9/17.
@@ -29,7 +28,7 @@ public class RouterConfiguration implements RapidRouterConfiguration {
     @Override
     public RapidRouterMapping[] configRapidRouterMappings() {
         return new RapidRouterMapping[]{
-                new ThisRapidRouterMapping()
+                new RapidRouterMappingHaquApp()
         };
     }
 }

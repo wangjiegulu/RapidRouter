@@ -11,6 +11,8 @@ import com.wangjie.rapidrouter.core.listener.RouterGoAfterCallback;
 import com.wangjie.rapidrouter.core.listener.RouterGoAroundCallback;
 import com.wangjie.rapidrouter.core.listener.RouterGoBeforeCallback;
 import com.wangjie.rapidrouter.core.listener.RouterTargetNotFoundCallback;
+import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategyRegular;
+import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategySimple;
 import com.wangjie.rapidrouter.example.R;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -69,7 +71,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.activity_main_to_c_not_found_btn:
                 RapidRouter.with(this)
-                        .uri("sc://rapidrouter.c?p_name=wangjie&p_age=18")
+                        .uri("sc://wangL0vjie.c?paramOfCActivity=3.14")
                         .targetNotFound(new RouterTargetNotFoundCallback() {
                             @Override
                             public boolean onRouterTargetNotFound(RouterStuff routerStuff) {
@@ -77,6 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 return false;
                             }
                         })
+                        .strategies(RapidRouterStrategyRegular.class, RapidRouterStrategySimple.class)
                         .go();
                 break;
             default:

@@ -12,6 +12,7 @@ import com.wangjie.rapidrouter.compiler.objs.ParamEntry;
 import com.wangjie.rapidrouter.compiler.objs.RouterEntry;
 import com.wangjie.rapidrouter.compiler.objs.UriEntry;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +60,7 @@ public class RouterProcessor extends BaseAbstractProcessor {
             if (!routerEntry.getUriEntries().isEmpty()) {
                 try {
                     logger("RouterMapping generate START...");
-//                    routerEntry.brewJava().writeTo(filer);
+                    routerEntry.brewJava().writeTo(filer);
                     logger("RouterMapping generate END...routerEntry: " + routerEntry);
                 } catch (RuntimeException e) {
                     throw e;
@@ -130,8 +131,15 @@ public class RouterProcessor extends BaseAbstractProcessor {
     private UriEntry parseUriEntry(Element classEle, RRUri rrUri) {
         UriEntry uriEntry = new UriEntry();
         uriEntry.setRouterTargetClass(classEle);
-        uriEntry.setScheme(rrUri.scheme());
-        uriEntry.setHost(rrUri.host());
+
+        String uriStr = rrUri.uri();
+        if (!uriStr.startsWith("~")) {
+            URI uri = URI.create(uriStr);
+            uriEntry.setScheme(uri.getScheme());
+            uriEntry.setHost(uri.getHost());
+        } else {
+            uriEntry.setUriRegular(uriStr.substring(1));
+        }
 
         List<ParamEntry> paramEntries = uriEntry.getParams();
 

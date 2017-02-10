@@ -22,7 +22,7 @@ public class RapidRouterStrategySimple extends RapidRouterAbstractStrategy {
     public void onRapidRouterMappings(RapidRouterMapping[] rapidRouterMappings) {
         HashMap<String, HashMap<String, RouterTarget>> result = new HashMap<>();
         for (RapidRouterMapping mapping : rapidRouterMappings) {
-            mapping.calcRouterMapper(result);
+            mapping.calcSimpleRouterMapper(result);
         }
         mapping = result;
     }

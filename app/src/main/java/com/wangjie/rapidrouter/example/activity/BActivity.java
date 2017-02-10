@@ -12,10 +12,10 @@ import com.wangjie.rapidrouter.api.annotations.RRUri;
 /**
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/8/17.
  */
-@RRUri(scheme = "rr", host = "rapidrouter.b", params = {
+@RRUri(uri = "rr://rapidrouter.b", params = {
         @RRParam(name = "id", type = long.class)
 })
-public class BActivity extends BaseActivity{
+public class BActivity extends BaseActivity {
     private static final String TAG = BActivity.class.getSimpleName();
 
     @Override

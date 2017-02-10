@@ -18,7 +18,7 @@ public abstract class RapidRouterMapping {
         return map;
     }
 
-    public abstract HashMap<String, HashMap<String, RouterTarget>> calcRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper);
+    public abstract HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper);
 
     public abstract HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper);
 

@@ -44,48 +44,50 @@ public class RouterEntry {
                         ClassName.bestGuess(GuessClass.BASE_ROUTER_MAPPING)
                 );
 
-        // calcRouterMapper method
+        // calcSimpleRouterMapper method
         TypeName stringTypeName = ClassName.get(String.class);
         ClassName hashMapClassName = ClassName.get(HashMap.class);
         TypeName routerTargetTypeName = ClassName.bestGuess(GuessClass.ROUTER_TARGET);
 
-        TypeName mapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName,
+        TypeName simpleMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName,
                 ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName)
         );
 
-        MethodSpec.Builder calcRouterMapperMethodBuilder = MethodSpec.methodBuilder("calcRouterMapper")
+        TypeName regMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName);
+
+        // calcSimpleRouterMapper method
+        // public HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper) {
+        MethodSpec.Builder calcSimpleMapperMethodBuilder = MethodSpec.methodBuilder("calcSimpleRouterMapper")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
-                .addParameter(mapperTypeName, "routerMapper")
-                .returns(mapperTypeName)
-                .addStatement("$T<$T, $T> params = null", hashMapClassName, stringTypeName, ClassName.get(Class.class));
+                .addParameter(simpleMapperTypeName, "routerMapper")
+                .returns(simpleMapperTypeName)
+                .addStatement("$T<$T, $T> params", hashMapClassName, stringTypeName, ClassName.get(Class.class));
+
+        // calcRegRouterMapper method
+        // public HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper) {
+        MethodSpec.Builder calcRegMapperMethodBuilder = MethodSpec.methodBuilder("calcRegRouterMapper")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addParameter(regMapperTypeName, "routerMapper")
+                .returns(regMapperTypeName)
+                .addStatement("$T<$T, $T> params", hashMapClassName, stringTypeName, ClassName.get(Class.class));
+
 
         for (UriEntry uriEntry : uriEntries) {
-            calcRouterMapperMethodBuilder.addCode("// " + uriEntry.getRouterTargetClass() + "\n");
-
-            List<ParamEntry> paramEntries = uriEntry.getParams();
-            if (null == paramEntries || paramEntries.size() <= 0) {
-                calcRouterMapperMethodBuilder.addStatement(
-                        "getEnsureMap($L, $S).put($S, new $T($T.class, null))",
-                        "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
+            String uriRegular = uriEntry.getUriRegular();
+            if (null == uriRegular || 0 == uriRegular.length()) {
+                onSimpleMapperMethodStatement(hashMapClassName, routerTargetTypeName, calcSimpleMapperMethodBuilder, uriEntry);
             } else {
-                calcRouterMapperMethodBuilder.addStatement("$L = new $T<>()",
-                        "params", hashMapClassName);
-                for (ParamEntry paramEntry : paramEntries) {
-                    LogUtil.logger("paramEntry: " + paramEntry);
-                    calcRouterMapperMethodBuilder.addStatement("params.put($S, $T.class)", paramEntry.getName(), paramEntry.getType());
-                }
-
-                calcRouterMapperMethodBuilder.addStatement(
-                        "getEnsureMap($L, $S).put($S, new $T($T.class, $L))",
-                        "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()), "params");
-
+                onRegularMapperMethodStatement(hashMapClassName, routerTargetTypeName, calcRegMapperMethodBuilder, uriEntry);
             }
         }
 
-        calcRouterMapperMethodBuilder.addStatement("return $L", "routerMapper");
+        calcSimpleMapperMethodBuilder.addStatement("return $L", "routerMapper");
+        calcRegMapperMethodBuilder.addStatement("return $L", "routerMapper");
 
-        result.addMethod(calcRouterMapperMethodBuilder.build());
+        result.addMethod(calcSimpleMapperMethodBuilder.build());
+        result.addMethod(calcRegMapperMethodBuilder.build());
 
         return JavaFile.builder(routerMappingPackage, result.build())
                 .addFileComment("GENERATED CODE BY RapidRouter. DO NOT MODIFY! $S",
@@ -95,13 +97,51 @@ public class RouterEntry {
                 .build();
     }
 
+    private void onSimpleMapperMethodStatement(ClassName hashMapClassName, TypeName routerTargetTypeName, MethodSpec.Builder calcSimpleMapperMethodBuilder, UriEntry uriEntry) {
+        calcSimpleMapperMethodBuilder.addCode("// " + uriEntry.getRouterTargetClass() + "\n");
 
+        List<ParamEntry> paramEntries = uriEntry.getParams();
+        if (null == paramEntries || paramEntries.size() <= 0) {
+            calcSimpleMapperMethodBuilder.addStatement(
+                    "getEnsureMap($L, $S).put($S, new $T($T.class, null))",
+                    "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
+        } else {
+            calcSimpleMapperMethodBuilder.addStatement("$L = new $T<>()",
+                    "params", hashMapClassName);
+            for (ParamEntry paramEntry : paramEntries) {
+                LogUtil.logger("[Simple]paramEntry: " + paramEntry);
+                calcSimpleMapperMethodBuilder.addStatement("params.put($S, $T.class)", paramEntry.getName(), paramEntry.getType());
+            }
 
+            calcSimpleMapperMethodBuilder.addStatement(
+                    "getEnsureMap($L, $S).put($S, new $T($T.class, $L))",
+                    "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()), "params");
 
+        }
+    }
 
+    private void onRegularMapperMethodStatement(ClassName hashMapClassName, TypeName routerTargetTypeName, MethodSpec.Builder calcRegMapperMethodBuilder, UriEntry uriEntry) {
+        calcRegMapperMethodBuilder.addCode("// " + uriEntry.getRouterTargetClass() + "\n");
 
+        List<ParamEntry> paramEntries = uriEntry.getParams();
+        if (null == paramEntries || paramEntries.size() <= 0) {
+            calcRegMapperMethodBuilder.addStatement(
+                    "$L.put($S, new $T($T.class, null))",
+                    "routerMapper", uriEntry.getUriRegular(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
+        } else {
+            calcRegMapperMethodBuilder.addStatement("$L = new $T<>()",
+                    "params", hashMapClassName);
+            for (ParamEntry paramEntry : paramEntries) {
+                LogUtil.logger("[Reg]paramEntry: " + paramEntry);
+                calcRegMapperMethodBuilder.addStatement("params.put($S, $T.class)", paramEntry.getName(), paramEntry.getType());
+            }
 
+            calcRegMapperMethodBuilder.addStatement(
+                    "$L.put($S, new $T($T.class, $L))",
+                    "routerMapper", uriEntry.getUriRegular(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()), "params");
 
+        }
+    }
 
 
 }

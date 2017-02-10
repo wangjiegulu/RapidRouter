@@ -11,9 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 public @interface RRUri {
-    String scheme();
-
-    String host();
+    String uri();
 
     RRParam[] params() default {};
 }
