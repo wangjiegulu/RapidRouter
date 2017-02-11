@@ -25,7 +25,7 @@ RapidRouter是Android端轻量级的路由框架，目前支持的特性：
 public class RouterConfiguration implements RapidRouterConfiguration {
     @NonNull
     @Override
-    public RapidRouterStrategy[] configRapidRouterStrategy() {
+    public RapidRouterStrategy[] configRapidRouterStrategies() {
         return new RapidRouterStrategy[]{
                 new RapidRouterStrategySimple(),
                 new RapidRouterStrategyRegular()
