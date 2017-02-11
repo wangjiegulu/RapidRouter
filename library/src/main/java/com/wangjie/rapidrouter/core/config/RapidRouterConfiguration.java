@@ -14,7 +14,7 @@ public interface RapidRouterConfiguration {
      * 配置路由策略
      */
     @NonNull
-    RapidRouterStrategy[] configRapidRouterStrategy();
+    RapidRouterStrategy[] configRapidRouterStrategies();
 
     /**
      * 配置路由映射

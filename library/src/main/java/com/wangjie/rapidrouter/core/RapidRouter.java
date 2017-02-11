@@ -48,7 +48,7 @@ public class RapidRouter {
         routerStrategyTreeMap = new LinkedHashMap<>();
 
         RapidRouterMapping[] rapidRouterMappings = rapidRouterConfiguration.configRapidRouterMappings();
-        for (RapidRouterStrategy routerStrategy : rapidRouterConfiguration.configRapidRouterStrategy()) {
+        for (RapidRouterStrategy routerStrategy : rapidRouterConfiguration.configRapidRouterStrategies()) {
             // Router Mapping configuration
             routerStrategy.onRapidRouterMappings(rapidRouterMappings);
             routerStrategyTreeMap.put(routerStrategy.getClass().getCanonicalName(), routerStrategy);

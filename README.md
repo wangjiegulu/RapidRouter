@@ -1,5 +1,7 @@
 # RapidRouter
 
+> [中文版本](README-zh.md)
+
 RapidRouter is a lightweight router framework for Android, Currently supported features:
 
 - Support for jumping activities through URI.
@@ -25,7 +27,7 @@ Create routing configuration extends `RouterConfiguration` class.
 public class RouterConfiguration implements RapidRouterConfiguration {
     @NonNull
     @Override
-    public RapidRouterStrategy[] configRapidRouterStrategy() {
+    public RapidRouterStrategy[] configRapidRouterStrategies() {
         return new RapidRouterStrategy[]{
                 new RapidRouterStrategySimple(),
                 new RapidRouterStrategyRegular()

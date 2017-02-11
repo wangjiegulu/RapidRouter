@@ -17,7 +17,7 @@ import com.wangjie.rapidrouter.core.strategy.RapidRouterStrategySimple;
 public class RouterConfiguration implements RapidRouterConfiguration {
     @NonNull
     @Override
-    public RapidRouterStrategy[] configRapidRouterStrategy() {
+    public RapidRouterStrategy[] configRapidRouterStrategies() {
         return new RapidRouterStrategy[]{
                 new RapidRouterStrategySimple(),
                 new RapidRouterStrategyRegular()
