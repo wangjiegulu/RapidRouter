@@ -11,7 +11,12 @@ RapidRouter是Android端轻量级的路由框架，目前支持的特性：
 
 ## 如何使用
 
-> 未上传到Maven中心库，目前的引入方式只能通过源码依赖
+### build.gradle([Check newest version](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.wangjiegulu%20RapidRouter)):
+```groovy
+compile "com.github.wangjiegulu:rapidrouter:x.x.x"
+compile "com.github.wangjiegulu:rapidrouter-api:x.x.x"
+annotationProcessor "com.github.wangjiegulu:rapidrouter-compiler:x.x.x"
+```
 
 ### RapidRouter初始化
 

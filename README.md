@@ -13,7 +13,13 @@ RapidRouter is a lightweight router framework for Android, Currently supported f
 
 ## How to use
 
-> Not uploaded to the Maven centre yet. Currently, use only through source-dependent way.
+### build.gradle([Check newest version](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.wangjiegulu%20RapidRouter)):
+```groovy
+compile "com.github.wangjiegulu:rapidrouter:x.x.x"
+compile "com.github.wangjiegulu:rapidrouter-api:x.x.x"
+annotationProcessor "com.github.wangjiegulu:rapidrouter-compiler:x.x.x"
+```
+
 
 ### RapidRouter initialization
 
