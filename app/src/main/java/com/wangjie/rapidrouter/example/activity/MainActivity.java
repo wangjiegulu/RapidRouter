@@ -27,7 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.activity_main_to_b_error_btn).setOnClickListener(this);
         findViewById(R.id.activity_main_to_c_intercept_btn).setOnClickListener(this);
         findViewById(R.id.activity_main_to_c_not_found_btn).setOnClickListener(this);
-
+        findViewById(R.id.activity_main_to_d_restful_btn).setOnClickListener(this);
     }
 
     @Override
@@ -80,6 +80,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             }
                         })
                         .strategies(RapidRouterStrategyRegular.class, RapidRouterStrategySimple.class)
+                        .go();
+                break;
+            case R.id.activity_main_to_d_restful_btn:
+                RapidRouter.with(this)
+                        .uri("rf://rapidrouter.d.detail/v1/123456")
                         .go();
                 break;
             default:

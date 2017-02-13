@@ -17,4 +17,6 @@ public interface RapidRouterStrategy {
     @Nullable
     RouterTarget findRouterTarget(@NonNull Uri uri);
 
+    String parseParamFromUri(@NonNull Uri uri, @NonNull String paramKey);
+
 }

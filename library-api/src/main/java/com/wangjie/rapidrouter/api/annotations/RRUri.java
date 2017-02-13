@@ -13,5 +13,7 @@ import java.lang.annotation.Target;
 public @interface RRUri {
     String uri();
 
+    String path();
+
     RRParam[] params() default {};
 }

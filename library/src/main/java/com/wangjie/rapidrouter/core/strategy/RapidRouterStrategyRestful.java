@@ -10,9 +10,10 @@ import com.wangjie.rapidrouter.core.target.RouterTarget;
 import java.util.HashMap;
 
 /**
- * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/10/17.
+ * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/13/17.
  */
-public class RapidRouterStrategySimple extends RapidRouterAbstractStrategy {
+public class RapidRouterStrategyRESTful extends RapidRouterAbstractStrategy {
+
     /**
      * HashMap<{scheme}, HashMap<{host}, {router target}>>
      */
@@ -20,29 +21,21 @@ public class RapidRouterStrategySimple extends RapidRouterAbstractStrategy {
 
     @Override
     public void onRapidRouterMappings(RapidRouterMapping[] rapidRouterMappings) {
-        HashMap<String, HashMap<String, RouterTarget>> result = new HashMap<>();
-        for (RapidRouterMapping mapping : rapidRouterMappings) {
-            mapping.calcSimpleRouterMapper(result);
-        }
-        mapping = result;
+        // ignore
     }
 
     @Nullable
     @Override
     protected RouterTarget findRouterTargetInternal(@NonNull Uri uri) {
-        if (null == mapping) {
-//            throw new RapidRouterIllegalException("Maps not set in SimpleRouterStrategy.");
-            return null;
-        }
-        HashMap<String, RouterTarget> schemeMapper = mapping.get(uri.getScheme());
-        if (null != schemeMapper) {
-            return schemeMapper.get(uri.getHost());
-        }
+
         return null;
     }
 
     @Override
     public String parseParamFromUri(@NonNull Uri uri, @NonNull String paramKey) {
-        return uri.getQueryParameter(paramKey);
+//        uri.getPathSegments();
+
+        return null;
     }
+
 }

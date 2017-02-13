@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.wangjie.rapidrouter.core.config.RapidRouterConfiguration;
@@ -72,9 +73,9 @@ public class RapidRouter {
         try {
             Uri uri = Uri.parse(uriStr);
 
-            RouterTarget routerTarget = findRouterTarget(routerStuff, uri);
-
-            if (null == routerTarget) {
+            RouterTarget routerTarget = findRouterStrategy(routerStuff, uri);
+            RapidRouterStrategy routerStrategy;
+            if (null == routerTarget || null == (routerStrategy = routerTarget.getRouterStrategy())) {
                 RouterTargetNotFoundCallback targetNotFoundCallback = routerStuff.targetNotFound();
                 if (null == targetNotFoundCallback || !targetNotFoundCallback.onRouterTargetNotFound(routerStuff)) {
                     if (null != onRapidRouterListener) {
@@ -102,7 +103,7 @@ public class RapidRouter {
             for (String paramName : uri.getQueryParameterNames()) {
                 Class tempClass;
                 Class paramClass = null == params || null == (tempClass = params.get(paramName)) ? String.class : tempClass;
-                putExtraToIntent(intent, paramClass, paramName, uri.getQueryParameter(paramName));
+                putExtraToIntent(intent, paramClass, paramName, routerStrategy.parseParamFromUri(uri, paramName));
             }
 
             RouterGoBeforeCallback goBeforeCallback = routerStuff.goBefore();
@@ -144,7 +145,8 @@ public class RapidRouter {
     /**
      * 根据策略 查询RouterTarget
      */
-    private static RouterTarget findRouterTarget(RouterStuff routerStuff, Uri uri) {
+    @Nullable
+    private static RouterTarget findRouterStrategy(RouterStuff routerStuff, Uri uri) {
         RouterTarget routerTarget = null;
         List<Class<? extends RapidRouterStrategy>> supportStrategies = routerStuff.strategies();
         if (null == supportStrategies || supportStrategies.isEmpty()) {

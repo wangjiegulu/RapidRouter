@@ -30,7 +30,7 @@ public class RapidRouterStrategyRegular extends RapidRouterAbstractStrategy {
 
     @Nullable
     @Override
-    public RouterTarget findRouterTarget(@NonNull Uri uri) {
+    protected RouterTarget findRouterTargetInternal(@NonNull Uri uri) {
         if (null == mapping) {
             return null;
         }
@@ -40,5 +40,10 @@ public class RapidRouterStrategyRegular extends RapidRouterAbstractStrategy {
             }
         }
         return null;
+    }
+
+    @Override
+    public String parseParamFromUri(@NonNull Uri uri, @NonNull String paramKey) {
+        return uri.getQueryParameter(paramKey);
     }
 }
