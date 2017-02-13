@@ -107,7 +107,7 @@ public class RouterEntry {
                     "getEnsureMap($L, $S).put($S, new $T($T.class, null))",
                     "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
         } else {
-            calcSimpleMapperMethodBuilder.addStatement("$L = new $T<>(" + paramSize + ")",
+            calcSimpleMapperMethodBuilder.addStatement("$L = new $T<>(" + paramSize + ", 1F)",
                     "params", hashMapClassName);
             for (ParamEntry paramEntry : paramEntries) {
                 LogUtil.logger("[Simple]paramEntry: " + paramEntry);
@@ -131,7 +131,7 @@ public class RouterEntry {
                     "$L.put($S, new $T($T.class, null))",
                     "routerMapper", uriEntry.getUriRegular(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
         } else {
-            calcRegMapperMethodBuilder.addStatement("$L = new $T<>(" + paramSize + ")",
+            calcRegMapperMethodBuilder.addStatement("$L = new $T<>(" + paramSize + ", 1F)",
                     "params", hashMapClassName);
             for (ParamEntry paramEntry : paramEntries) {
                 LogUtil.logger("[Reg]paramEntry: " + paramEntry);
