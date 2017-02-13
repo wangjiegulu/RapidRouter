@@ -9,16 +9,11 @@ import com.wangjie.rapidrouter.api.annotations.RRParam;
 import com.wangjie.rapidrouter.api.annotations.RRUri;
 
 /**
- * rf://rapidrouter.d/v/:apiVer/id/:id
- * rf://rapidrouter.d/v/v1/id/123456
+ * rf://rapidrouter.d/v/:apiVer/id/:id rf://rapidrouter.d/v/v1/id/123456
  *
  * Author: wangjie Email: tiantian.china.2@gmail.com Date: 2/8/17.
  */
-@RRUri(uri = "rf://rapidrouter.d",
-        path = "/v/:apiVer/id/:id",
-        params = {
-        @RRParam(name = "apiVer", type = String.class),
-        @RRParam(name = "id", type = long.class),
+@RRUri(uri = "rf://rapidrouter.d", params = {
         @RRParam(name = "vUrl")
 })
 public class DActivity extends BaseActivity {

@@ -29,15 +29,8 @@ public class RouterTarget {
         return targetClass;
     }
 
-    public void setTargetClass(Class targetClass) {
-        this.targetClass = targetClass;
-    }
-
     public HashMap<String, Class> getParams() {
         return params;
     }
 
-    public void setParams(HashMap<String, Class> params) {
-        this.params = params;
-    }
 }

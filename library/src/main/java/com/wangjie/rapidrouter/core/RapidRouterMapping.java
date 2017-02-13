@@ -1,5 +1,7 @@
 package com.wangjie.rapidrouter.core;
 
+import android.support.annotation.NonNull;
+
 import com.wangjie.rapidrouter.core.target.RouterTarget;
 
 import java.util.HashMap;
@@ -18,8 +20,8 @@ public abstract class RapidRouterMapping {
         return map;
     }
 
-    public abstract HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper);
+    public abstract HashMap<String, RouterTarget> calcSimpleRouterMapper(@NonNull HashMap<String, RouterTarget> routerMapper);
 
-    public abstract HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper);
+    public abstract HashMap<String, RouterTarget> calcRegRouterMapper(@NonNull HashMap<String, RouterTarget> routerMapper);
 
 }

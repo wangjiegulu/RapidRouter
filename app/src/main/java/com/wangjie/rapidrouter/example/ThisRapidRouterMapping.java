@@ -13,39 +13,32 @@ import java.util.HashMap;
  */
 public class ThisRapidRouterMapping extends RapidRouterMapping {
     @Override
-    public HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper) {
+    public HashMap<String, RouterTarget> calcSimpleRouterMapper(HashMap<String, RouterTarget> routerMapper) {
         HashMap<String, Class> params;
-
         // com.wangjie.rapidrouter.example.activity.AActivity
-        params = new HashMap<>();
+        params = new HashMap<>(2, 1F);
         params.put("p_name", String.class);
         params.put("p_age", int.class);
-        getEnsureMap(routerMapper, "rr").put("rapidrouter.a", new RouterTarget(AActivity.class, params));
-
+        routerMapper.put("rr://rapidrouter.a", new RouterTarget(AActivity.class, params));
         // com.wangjie.rapidrouter.example.activity.AActivity
-        params = new HashMap<>();
+        params = new HashMap<>(2, 1F);
         params.put("p_name", String.class);
         params.put("p_age", int.class);
-        getEnsureMap(routerMapper, "rr").put("rapidrouter_extra.a", new RouterTarget(AActivity.class, params));
-
+        routerMapper.put("rr://rapidrouter.a", new RouterTarget(AActivity.class, params));
         // com.wangjie.rapidrouter.example.activity.BActivity
-        params = new HashMap<>();
+        params = new HashMap<>(1, 1F);
         params.put("id", long.class);
-        getEnsureMap(routerMapper, "rr").put("rapidrouter.b", new RouterTarget(BActivity.class, params));
-
-//        // com.wangjie.rapidrouter.example.activity.CActivity
-        getEnsureMap(routerMapper, "sc").put("wangL0vjie.c", new RouterTarget(AActivity.class, null));
+        routerMapper.put("rr://rapidrouter.b", new RouterTarget(BActivity.class, params));
         return routerMapper;
     }
 
     @Override
     public HashMap<String, RouterTarget> calcRegRouterMapper(HashMap<String, RouterTarget> routerMapper) {
         HashMap<String, Class> params;
-
-        params = new HashMap<>();
+        // com.wangjie.rapidrouter.example.activity.CActivity
+        params = new HashMap<>(1, 1F);
         params.put("paramOfCActivity", float.class);
         routerMapper.put("((rr)|(sc))://wang.*jie\\.[cx].*", new RouterTarget(CActivity.class, params));
-
         return routerMapper;
     }
 }

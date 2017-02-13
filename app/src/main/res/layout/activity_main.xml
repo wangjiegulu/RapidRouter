@@ -45,10 +45,4 @@
             android:text="to Activity C [error]"
             />
 
-    <Button
-            android:id="@+id/activity_main_to_d_restful_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="to c Activity [RESTful]"
-            />
 </LinearLayout>

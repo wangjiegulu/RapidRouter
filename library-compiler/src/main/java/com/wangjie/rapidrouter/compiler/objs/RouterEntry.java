@@ -49,19 +49,21 @@ public class RouterEntry {
         ClassName hashMapClassName = ClassName.get(HashMap.class);
         TypeName routerTargetTypeName = ClassName.bestGuess(GuessClass.ROUTER_TARGET);
 
-        TypeName simpleMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName,
-                ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName)
-        );
+        // HashMap<String, HashMap<String, RouterTarget>>
+//        TypeName simpleMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName,
+//                ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName)
+//        );
 
-        TypeName regMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName);
+        // HashMap<String, RouterTarget>
+        TypeName routerTargetMapperTypeName = ParameterizedTypeName.get(hashMapClassName, stringTypeName, routerTargetTypeName);
 
         // calcSimpleRouterMapper method
         // public HashMap<String, HashMap<String, RouterTarget>> calcSimpleRouterMapper(HashMap<String, HashMap<String, RouterTarget>> routerMapper) {
         MethodSpec.Builder calcSimpleMapperMethodBuilder = MethodSpec.methodBuilder("calcSimpleRouterMapper")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
-                .addParameter(simpleMapperTypeName, "routerMapper")
-                .returns(simpleMapperTypeName)
+                .addParameter(routerTargetMapperTypeName, "routerMapper")
+                .returns(routerTargetMapperTypeName)
                 .addStatement("$T<$T, $T> params", hashMapClassName, stringTypeName, ClassName.get(Class.class));
 
         // calcRegRouterMapper method
@@ -69,8 +71,8 @@ public class RouterEntry {
         MethodSpec.Builder calcRegMapperMethodBuilder = MethodSpec.methodBuilder("calcRegRouterMapper")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
-                .addParameter(regMapperTypeName, "routerMapper")
-                .returns(regMapperTypeName)
+                .addParameter(routerTargetMapperTypeName, "routerMapper")
+                .returns(routerTargetMapperTypeName)
                 .addStatement("$T<$T, $T> params", hashMapClassName, stringTypeName, ClassName.get(Class.class));
 
 
@@ -102,10 +104,11 @@ public class RouterEntry {
 
         List<ParamEntry> paramEntries = uriEntry.getParams();
         int paramSize = null == paramEntries ? 0 : paramEntries.size();
+        String key = uriEntry.getScheme() + "://" + uriEntry.getHost();
         if (paramSize <= 0) {
             calcSimpleMapperMethodBuilder.addStatement(
-                    "getEnsureMap($L, $S).put($S, new $T($T.class, null))",
-                    "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
+                    "$L.put($S, new $T($T.class, null))",
+                    "routerMapper", key, routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()));
         } else {
             calcSimpleMapperMethodBuilder.addStatement("$L = new $T<>(" + paramSize + ", 1F)",
                     "params", hashMapClassName);
@@ -115,8 +118,8 @@ public class RouterEntry {
             }
 
             calcSimpleMapperMethodBuilder.addStatement(
-                    "getEnsureMap($L, $S).put($S, new $T($T.class, $L))",
-                    "routerMapper", uriEntry.getScheme(), uriEntry.getHost(), routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()), "params");
+                    "$L.put($S, new $T($T.class, $L))",
+                    "routerMapper", key, routerTargetTypeName, ClassName.get(uriEntry.getRouterTargetClass().asType()), "params");
 
         }
     }

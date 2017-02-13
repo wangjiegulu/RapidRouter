@@ -14,13 +14,13 @@ import java.util.HashMap;
  */
 public class RapidRouterStrategySimple extends RapidRouterAbstractStrategy {
     /**
-     * HashMap<{scheme}, HashMap<{host}, {router target}>>
+     * HashMap<{scheme://host}, {router target}>
      */
-    private HashMap<String, HashMap<String, RouterTarget>> mapping;
+    private HashMap<String, RouterTarget> mapping;
 
     @Override
     public void onRapidRouterMappings(RapidRouterMapping[] rapidRouterMappings) {
-        HashMap<String, HashMap<String, RouterTarget>> result = new HashMap<>();
+        HashMap<String, RouterTarget> result = new HashMap<>();
         for (RapidRouterMapping mapping : rapidRouterMappings) {
             mapping.calcSimpleRouterMapper(result);
         }
@@ -34,11 +34,8 @@ public class RapidRouterStrategySimple extends RapidRouterAbstractStrategy {
 //            throw new RapidRouterIllegalException("Maps not set in SimpleRouterStrategy.");
             return null;
         }
-        HashMap<String, RouterTarget> schemeMapper = mapping.get(uri.getScheme());
-        if (null != schemeMapper) {
-            return schemeMapper.get(uri.getHost());
-        }
-        return null;
+
+        return mapping.get(uri.getScheme() + "://" + uri.getHost());
     }
 
     @Override
