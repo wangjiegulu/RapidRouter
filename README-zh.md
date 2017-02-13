@@ -195,4 +195,19 @@ RapidRouter.with(this)
 - **strategies()**：调用该方法可以重新设置路由策略的优先级，默认优先级为`RapidRouterConfiguration::configRapidRouterStrategy()`中定义的。典型的场景是，一个uri可以同时匹配到多个Activity，这时可以从采取策略的不同来决定跳转到哪个Activity。
 
 
+License
+=======
 
+    Copyright 2017 Wang Jie
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
