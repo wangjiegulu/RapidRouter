@@ -51,3 +51,6 @@ captures/
 .externalNativeBuild
 libs/
 src/main/res/drawable/
+
+nexus_aar_db.gradle
+gradle.properties

@@ -31,3 +31,6 @@ dependencies {
 
     compile project(':library-api')
 }
+
+//apply from: 'nexus_aar_db.gradle'
+apply from: 'nexus_aar_center.gradle'
